@@ -1,0 +1,26 @@
+{
+  "name": "i-jobs",
+  "version": "1.0.0",
+  "description": "A bot agent for search of jobs on the internet",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Bot",
+    "MaratonaBotsMicrosoft",
+    "BotFramework",
+    "JobSearch",
+    "node"
+  ],
+  "author": "Victor Coutinho de Melo",
+  "license": "ISC",
+  "dependencies": {
+    "botbuilder": "^3.14.0",
+    "botbuilder-cognitiveservices": "^1.1.0",
+    "dotenv-extended": "^2.0.1",
+    "nodemon": "^1.17.2",
+    "request": "^2.85.0",
+    "restify": "^6.3.4"
+  }
+}
