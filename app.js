@@ -6,7 +6,7 @@ const server = restify.createServer();
 const request = require('request')
 const port = process.env.port || 3978;
 
-const url_busca = process.env.ENDPOINT_API;
+// const url_busca = process.env.ENDPOINT_API;
 
 
 server.listen(port, () => {
@@ -41,6 +41,25 @@ intents.onDefault((session, args) => {
     session.send('Desculpe, não entendi sua solicitação!')
 })
 
+var saudou = false
+
+/* function create_card(jobs, session) {
+    console.log(job.titulo + ' ' + job.url)
+    const oports = []
+    jobs.forEach(job => {
+        const card = new builder.HeroCard(session)
+            .title(`${job.titulo}`)
+            .subtitle(`${job.localidade}`)
+            .images([
+                builder.CardImage.create(session, `${job.img}`)
+            ])
+            .buttons([
+                builder.CardAction.openUrl(session, `${job.url}`)
+            ]);
+        oports.push(card)
+    })
+    return oports;
+} */
 /**
  * Intent if user is looking for job
  * Luis looks if the sentence contaning the job for the person search
@@ -50,26 +69,41 @@ intents.onDefault((session, args) => {
  * @returns vagas = json with jobs match with funcao 
  */
 intents.matches('oportunidades', (session, args, next) => {
-    console.log(JSON.stringify(args))
     const funcao = builder.EntityRecognizer.findAllEntities(args.entities, 'funcao').map(m => m.entity).join(' ')
     if (funcao) {
-        const endpoint = `${url_busca}${funcao}`
-        session.send('Aguarde enquanto busco as oportunidades.')
-        request(endpoint, (error, response, body) => {
-            if (error || !body)
+        if (!saudou) {
+            session.send("Tudo bem que eu sou só um robo, mas não custa dizer olá!")
+        }
+        const endpoint = `${process.env.ENDPOINT_API}${funcao}`
+        setTimeout(function () {
+            session.send('Aguarde enquanto busco as oportunidades.')
+        }, 4000)
+        request.get(endpoint, (error, response, body) => {
+            if (error || !body) {
+                console.log(error)
                 return session.send('Ocorreu algum erro, tente novamente mais tarde.')
-            const vagas = JSON.parse(body);
-            console.log(JSON.stringify(body))
-            for (vaga in vagas) {
-                session.send(vagas.map(m => `${m.titulo}\n ${m.localidade}\n ${m.url}`))
+            } else {
+                const vagas = JSON.parse(body);
+                if (vagas.length < 1) {
+                    return session.send(`Desculpe, mas não encontrei oportunidades para **${funcao}**`)
+                }
+                vagas.forEach(vaga => {
+                    setTimeout(function () {
+                        session.send(vagas.map(m => `${m.titulo} - ${m.localidade} ${m.url}`))
+                    }, 3000)
+
+                });
             }
+
         })
     } else {
         session.send('Que tipo de oportunidades você procura?')
     }
 })
 
+
 intents.matches('cumprimento.formal', (session, args, next) => {
+    saudou = true
     console.log(JSON.stringify(args))
     const saudar = builder.EntityRecognizer.findAllEntities(args.entities, 'saudar').map(m => m.entity).join('+')
     if (saudar) {
@@ -80,7 +114,59 @@ intents.matches('cumprimento.formal', (session, args, next) => {
         session.send('Olá, eu sou um Bot buscador de vagas na internet!')
         setTimeout(function () {
             session.send('O que você deseja procurar?')
-        }, 2000)
+        }, 3000)
     }
+})
+
+
+intents.matches('cumprimento.informal', (session, args, next) => {
+    saudou = true
+    session.send('Tranquilo no mamilo!')
+    setTimeout(() => {
+        session.send('Que tu manda?')
+    }, 3000);
+})
+
+intents.matches('brincadeiras', (session, args, next) => {
+    if (!saudou) {
+        session.send(`Engraçado é que nem um **olá** a pessoa dá!!`)
+        session.send('Mas eu sou só um Bot, né!')
+    }
+    setTimeout(()=>{
+        session.send('Eu ainda não aprendi isso!')
+    }, 3000)
+    setTimeout(()=>{
+        session.send('Tem muita coisa pra aprender ainda!')
+    }, 5000)
+    /*setTimeout(() => {
+        session.send('Eu só conheço charada, serve?', (session) => {
+            if (session.message.text == 'sim' || session.message.text == 'Sim' ||
+                session.message.text == 'SIM' || session.message.text == 'yes' ||
+                session.message.text == 'ok' || session.message.text == 'OK' ||
+                session.message.text == 'certo' || session.message.text == 'blz') {
+                charada = {
+                    url: 'https://us-central1-kivson.cloudfunctions.net/charada-aleatoria',
+                    headers: 'application/json'
+                }
+                request.get(charada, (error, response, body) => {
+                    if (error || !body) {
+                        session.send('Não to lembrando de nenhuma charada boa hoje.')
+                        setTimeout(() => {
+                            session.send('Outro dia eu conto uma que vai te derrubar da cadeira!!')
+                        }, 2000)
+                    } else {
+                        char = JSON.parse(body)
+                        session.send(`${char.pergunta}`)
+                        if (session.message.text != 'não quero saber') {
+                            session.send(`${char.resposta}`)
+                        } else {
+                            session.send('Foi você quem pensou que eu não sabia brincar!')
+                        }
+                    }
+                })
+            }
+        })
+    }, 4000);*/
+    
 })
 bot.dialog('/', intents)
