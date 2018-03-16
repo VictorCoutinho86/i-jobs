@@ -3,7 +3,7 @@ const builder = require('botbuilder');
 const restify = require('restify');
 const cognitive = require('botbuilder-cognitiveservices');
 const server = restify.createServer();
-const request = require('request')
+const request = require('request');
 const port = process.env.port || process.env.PORT || 3978;
 
 // const url_busca = process.env.ENDPOINT_API;
@@ -88,9 +88,9 @@ intents.matches('oportunidades', (session, args, next) => {
                     return session.send(`Desculpe, mas não encontrei oportunidades para **${funcao}**`)
                 }
                 vagas.forEach(vaga => {
+                    session.send(vagas.map(m => `${m.titulo} - ${m.localidade} \n${m.url}`))
                     setTimeout(function () {
-                        session.send(vagas.map(m => `${m.titulo} - ${m.localidade} ${m.url}`))
-                    }, 3000)
+                    }, 5000)
 
                 });
             }
@@ -104,14 +104,13 @@ intents.matches('oportunidades', (session, args, next) => {
 
 intents.matches('cumprimento.formal', (session, args, next) => {
     saudou = true
-    console.log(JSON.stringify(args))
     const saudar = builder.EntityRecognizer.findAllEntities(args.entities, 'saudar').map(m => m.entity).join('+')
     if (saudar) {
-        if (saudar == 'bom+dia') { session.send('Bom dia, em que posso lhe ajudar?') }
-        if (saudar == 'boa+tarde') { session.send('Boa tarde, Em que posso ser útil?') }
-        if (saudar == 'boa+noite') { session.send('Boa noite, posso lhe ajudar em algo?') }
+        if (saudar == 'bom+dia') { session.send(`Bom dia, em que posso lhe ajudar?`) }
+        if (saudar == 'boa+tarde') { session.send(`Boa tarde, Em que posso ser útil?`) }
+        if (saudar == 'boa+noite') { session.send(`Boa noite, posso lhe ajudar em algo?`) }
     } else {
-        session.send('Olá, eu sou um Bot buscador de vagas na internet!')
+        session.send(`Olá ${session.userData.name}, eu sou um Bot buscador de vagas na internet!`)
         setTimeout(function () {
             session.send('O que você deseja procurar?')
         }, 3000)
@@ -121,7 +120,7 @@ intents.matches('cumprimento.formal', (session, args, next) => {
 
 intents.matches('cumprimento.informal', (session, args, next) => {
     saudou = true
-    session.send('Tranquilo no mamilo!')
+    session.send('De boa na lagoa!')
     setTimeout(() => {
         session.send('Que tu manda?')
     }, 3000);
@@ -138,6 +137,7 @@ intents.matches('brincadeiras', (session, args, next) => {
     setTimeout(()=>{
         session.send('Tem muita coisa pra aprender ainda!')
     }, 5000)
+
     /*setTimeout(() => {
         session.send('Eu só conheço charada, serve?', (session) => {
             if (session.message.text == 'sim' || session.message.text == 'Sim' ||
@@ -169,4 +169,20 @@ intents.matches('brincadeiras', (session, args, next) => {
     }, 4000);*/
     
 })
+
+/* 
+if (update.membersAdded) {
+        update.membersAdded.forEach( (identity) => {
+            if (identity.id === update.address.bot.id) {
+                bot.loadSession(update.address, (err, session) => {
+                    if(err)
+                        return err
+                    const message = `Olá ${update.address.bot.name}`
+                    session.send(message)
+                })
+            }
+        })
+    }
+*/
+
 bot.dialog('/', intents)
