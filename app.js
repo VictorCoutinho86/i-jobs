@@ -4,7 +4,7 @@ const restify = require('restify');
 const cognitive = require('botbuilder-cognitiveservices');
 const server = restify.createServer();
 const request = require('request')
-const port = process.env.port || 3978;
+const port = process.env.port || process.env.PORT || 3978;
 
 // const url_busca = process.env.ENDPOINT_API;
 
