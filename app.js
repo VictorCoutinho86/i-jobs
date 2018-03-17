@@ -106,9 +106,9 @@ intents.matches('cumprimento.formal', (session, args, next) => {
     saudou = true
     const saudar = builder.EntityRecognizer.findAllEntities(args.entities, 'saudar').map(m => m.entity).join('+')
     if (saudar) {
-        if (saudar == 'bom+dia') { session.send(`Bom dia, em que posso lhe ajudar?`) }
-        if (saudar == 'boa+tarde') { session.send(`Boa tarde, Em que posso ser útil?`) }
-        if (saudar == 'boa+noite') { session.send(`Boa noite, posso lhe ajudar em algo?`) }
+        if (saudar == 'bom+dia') { session.send(`Bom dia ${session.message.user.name}, em que posso lhe ajudar?`) }
+        if (saudar == 'boa+tarde') { session.send(`Boa tarde ${session.message.user.name}, Em que posso ser útil?`) }
+        if (saudar == 'boa+noite') { session.send(`Boa noite ${session.message.user.name}, posso lhe ajudar em algo?`) }
     } else {
         session.send(`Olá ${session.message.user.name}, eu sou um Bot buscador de vagas na internet!`)
         setTimeout(function () {
