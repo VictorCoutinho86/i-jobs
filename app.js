@@ -110,10 +110,11 @@ intents.matches('cumprimento.formal', (session, args, next) => {
         if (saudar == 'boa+tarde') { session.send(`Boa tarde, Em que posso ser útil?`) }
         if (saudar == 'boa+noite') { session.send(`Boa noite, posso lhe ajudar em algo?`) }
     } else {
-        session.send(`Olá ${session.userData.name}, eu sou um Bot buscador de vagas na internet!`)
+        session.send(`Olá ${session.message.user.name}, eu sou um Bot buscador de vagas na internet!`)
         setTimeout(function () {
             session.send('O que você deseja procurar?')
         }, 3000)
+        console.log(session.message.address.channelId)
     }
 })
 
@@ -122,7 +123,7 @@ intents.matches('cumprimento.informal', (session, args, next) => {
     saudou = true
     session.send('De boa na lagoa!')
     setTimeout(() => {
-        session.send('Que tu manda?')
+        session.send(`Que tu manda ${session.message.user.name}?`)
     }, 3000);
 })
 
@@ -184,5 +185,13 @@ if (update.membersAdded) {
         })
     }
 */
+
+intents.matches('agradecimento', (session, args, next)=>{
+    session.send("Por nada, espero ter ajudado!")
+    setTimeout(()=>{
+        session.send("Boa sorte!")
+    }, 4000);
+    session.endDialog()
+})
 
 bot.dialog('/', intents)
