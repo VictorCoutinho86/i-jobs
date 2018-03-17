@@ -167,6 +167,7 @@ intents.matches('brincadeiras', (session, args, next) => {
             }
         })
     }, 4000);*/
+    
 })
 
 /* 
