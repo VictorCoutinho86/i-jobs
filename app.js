@@ -97,7 +97,7 @@ intents.matches('oportunidades', (session, args, next) => {
 
         })
     } else {
-        session.send('Que tipo de oportunidades você procura?')
+        session.send('Que tipo de oportunidade procura?')
     }
 })
 
@@ -189,7 +189,7 @@ if (update.membersAdded) {
 intents.matches('agradecimento', (session, args, next)=>{
     session.send("Por nada, espero ter ajudado!")
     setTimeout(()=>{
-        session.send("Boa sorte!")
+        session.send(`Boa sorte ${session.message.user.name}!`)
     }, 4000);
     session.endDialog()
 })
