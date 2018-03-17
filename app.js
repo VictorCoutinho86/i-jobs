@@ -69,6 +69,7 @@ var saudou = false
  * @returns vagas = json with jobs match with funcao 
  */
 intents.matches('oportunidades', (session, args, next) => {
+    console.log(session.message.user.name)
     const funcao = builder.EntityRecognizer.findAllEntities(args.entities, 'funcao').map(m => m.entity).join(' ')
     if (funcao) {
         if (!saudou) {
@@ -77,7 +78,9 @@ intents.matches('oportunidades', (session, args, next) => {
         const endpoint = `${process.env.ENDPOINT_API}${funcao}`
         setTimeout(function () {
             session.send('Aguarde enquanto busco as oportunidades.')
+            session.sendTyping()
         }, 4000)
+        session.sendTyping()
         request.get(endpoint, (error, response, body) => {
             if (error || !body) {
                 console.log(error)
@@ -103,6 +106,7 @@ intents.matches('oportunidades', (session, args, next) => {
 
 
 intents.matches('cumprimento.formal', (session, args, next) => {
+    console.log(session.message.user.name)
     saudou = true
     const saudar = builder.EntityRecognizer.findAllEntities(args.entities, 'saudar').map(m => m.entity).join('+')
     if (saudar) {
@@ -120,6 +124,7 @@ intents.matches('cumprimento.formal', (session, args, next) => {
 
 
 intents.matches('cumprimento.informal', (session, args, next) => {
+    console.log(session.message.user.name)
     saudou = true
     session.send('De boa na lagoa!')
     setTimeout(() => {
@@ -193,5 +198,6 @@ intents.matches('agradecimento', (session, args, next)=>{
     }, 4000);
     session.endDialog()
 })
+
 
 bot.dialog('/', intents)
